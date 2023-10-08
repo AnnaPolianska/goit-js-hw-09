@@ -43,7 +43,7 @@ function openedCalendar() {
 function actsOnChoosenDate(selDate) {
   periodOfTime = Date.parse(selDate[0]);
 
-  if (periodOfTime - new Date().getTime() > 30000) {
+  if (periodOfTime > new Date().getTime() ) {
     refs.button.disabled = false;
     refs.button.addEventListener('click', onStartBtnClick, { once: true });
   } else {
@@ -51,6 +51,7 @@ function actsOnChoosenDate(selDate) {
     refs.button.disabled = true;
   }
 }
+
 
 function makeFirstTimerValue() {
   timerValue = periodOfTime - new Date().getTime();
@@ -61,7 +62,12 @@ function onStartBtnClick() {
   refs.reset.addEventListener('click', onResetBtnClick);
   makeFirstTimerValue();
   timerId = setInterval(calculateAndDisplay, 1000);
+
+
+  
 }
+
+
 
 function onResetBtnClick() {
   refs.input.disabled = false;
@@ -72,6 +78,17 @@ function calculateAndDisplay() {
   const timeObj = convertMs(timerValue);
   displayTime(timeObj);
   timerValue -= 1000;
+
+
+  if (timerValue <  0) {
+    clearInterval(timerId);
+    
+    input.disabled = true;
+    
+    return;
+  }
+
+ 
 }
 
 const addLeadingZero = value => String(value).padStart(2, '0');
@@ -82,6 +99,8 @@ function displayTime(value) {
   dateRef.minutes.textContent = addLeadingZero(value.minutes);
   dateRef.seconds.textContent = addLeadingZero(value.seconds);
 }
+
+
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
